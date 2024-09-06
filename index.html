@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  </head>
+  <body>
+
+    <div class="intro-modal" id="introModal">
+      <img id="popupImg" src="./images/popup1.png" width="600px" height="640px" alt="Introduction Image">
+      <div class="intro-content">
+          <div class="cancel">
+          <svg id="cancel" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M19.1924 0.806641L0.807607 19.1914" stroke="#787878" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M19.1924 19.1914L0.807607 0.806631" stroke="#787878" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="step2" id="step2">[Step 1]</span>
+          <h1 id="h1">어피니티 다이어그램을<br/>진행할 노트를 입력해보세요.</h1>
+          <p id="p">노트에 들어갈 내용들은 문장으로 작성하되, <br/>
+              엔터키로 문장들을 구분해주세요.      <br/><br/> 
+              또는 엑셀 파일을 업로드하여 노트들을 생성할 수 있습니다.</p>
+            
+              <div class="carousel-btn">
+                  <button id="prev-btn" disabled>이전</button>
+                  <div class="carousel-indicators" id="indicators">
+                      <span class="indicator active"></span>
+                      <span class="indicator"></span>
+                      <span class="indicator"></span>
+                      <span class="indicator"></span>
+                  </div>
+                  <button id="next-btn">다음</button>
+              </div>
+      </div>
+  </div>
+
+
+    <div id="keyinput">
+    <div class="inputbg">
+      <label><h2>API Key를 입력하세요</h2</label>
+      <div class="inputlabel">
+        <input type="text" id="apiInput" placeholder="API Key 입력">
+        <button onclick="setApiValue()">설정</button>
+      </div>
+    </div>
+    </div>
+
+
+    
+    <Header>
+      <button id="home"><img src="./images/logo2.png" alt="" width="380px"></button>
+      <!--<input type="text" contenteditable="true" id="fileTitle" placeholder="|  Affinity Diagram">-->
+  </div>
+  <div class="userContainer">
+      <button id="changeApikey">apikey 교체</button>
+      <div id="apikeyModal" class="modal">
+          <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>API Key 변경</h2>
+              <label for="apikey-input">새로운 API Key를 입력하세요:</label>
+              <div class="apikey-input-flex">
+                  <input class="input-button-modal" type="text" id="apikey-input" placeholder="API Key 입력" />
+                  <button onclick="updateApiKey()">설정</button>
+              </div>
+          </div>
+      </div>
+      <button id="export-btn">Export <img src="./images/allow.png" class="export-btn" width="20px"></button>
+
+  </Header>
+
+
+
+    <div class="loading-container">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="content_area">
+      <div class="side-bar">
+        <div class="side_top_wrap">
+            <div class="project-title">
+                <h1 class="btn-title">주제<button class="tip" data-tip-text="작성하신 프로젝트나 서비스와 관련된 퍼소나를 만들 수 있어요.">?</button></h1>
+                <div class="btn-align">  
+                  <input id="projectTitleInput" type="text" placeholder="프로젝트나 서비스의 주제를 입력하세요."/>
+                </div>
+            </div>
+        </div>
+        <div class="side_bottom_wrap">
+          <div class="chose">
+              <div><a href="#" id="direct-link"><img src="images/pencil_default.svg" id="direct-img">직접생성</a></div>
+              <div><a href="#" id="interview-link"><img src="images/bubble_default.svg" id="interview-img">인터뷰 기반 생성</a></div>
+          </div>
+          <div id="tooltip" class="tooltip"></div>
+          <div class="interview-area">
+              <h1 class="btn-title">인터뷰 파일 업로드<button class="tip" data-tip-text="사용자 조사 과정에서 진행한 인터뷰 데이터를 엑셀 파일로 업로드하시면 관련된 퍼소나를 생성할 수 있어요.">?</button></h1>
+              <input type="file" id="file-upload" class="file-upload" accept=".xlsx, .xls"/>
+              <label for="file-upload" class="file-upload-label" id="file-upload-label">
+                <span id="file-upload-text" class="file-upload-text">파일을 업로드 해주세요.</span>
+                <span class="file-upload-icon"><img src="" alt=""></span>
+            </label>
+          </div>
+          <div class ="custom-area">
+              <div class="gender">
+                <h1 class="btn-title">성별</h1>
+                <div  class="btn-align">
+                  <button class="gender-btn" data-gender="여성">여성</button>
+                  <button class="gender-btn" data-gender="남성">남성</button>
+                </div>
+              </div>
+              <div class="age">
+                <h1 class="btn-title">나이</h1>
+                <div class="slider-container">
+                    <input id="rangeInput" type="range" min="0" max="100" value="50" oninput="updateValue(this.value)">
+                    <span id="rangeValue">50</span>
+                </div>
+              </div>
+              <div class="personality">
+                <h1 class="btn-title">성격<button class="tip" data-tip-text="DISC는 인간의 직무행태를 4가지로 분류하는 기술 검사로 각 옵션별 성격의 특징은 아래와 같습니다. <br><br>D 주도형은 업무 중 <b>외향적</b>이며, <b>업무</b> 지향적 <br>I 사교형은 업무 중 <b>외향적</b>이며, <b>사람</b> 지향적 <br>S 안정형은 업무 중 <b>내향적</b>이며, <b>사람</b> 지향적 <br>C 신중형은 업무 중 <b>내향적</b>이며, <b>업무</b> 지향적">?</button></h1> 
+                <div  class="btn-align">
+                  <button class="personality-btn" data-personality="D 주도형">D 주도형</button>
+                  <button class="personality-btn" data-personality="I 사교형">I 사교형</button>
+                  <button class="personality-btn" data-personality="S 안정형">S 안정형</button>
+                  <button class="personality-btn" data-personality="C 신중형">C 신중형</button>
+                </div>
+              </div>
+              <div class="proficiency">
+                <h1 class="btn-title">수행 능력<button class="tip" data-tip-text="주제에서 입력하신 프로젝트의 제품이나 서비스 등을 얼만큼 능숙하게 사용하는 정도에 대한 옵션입니다.">?</button></h1>
+                <div  class="btn-align">
+                  <button class="proficiency-btn" data-proficiency="입문자">입문자</button>
+                  <button class="proficiency-btn" data-proficiency="초보자">초보자</button>
+                  <button class="proficiency-btn" data-proficiency="중급자">중급자</button>
+                  <button class="proficiency-btn" data-proficiency="전문가">전문가</button>
+                </div> 
+              </div>
+              <div class="immersion">
+                <h1 class="btn-title">사용 정도<button class="tip" data-tip-text="주제에서 입력하신 프로젝트의 제품이나 서비스 등을 사용하는 정도(이용 시간)에 대한 옵션입니다.">?</button></h1>
+                <div  class="btn-align">
+                <button class="immersion-btn" data-immersion="가벼운 사용자">조금</button>
+                <button class="immersion-btn" data-immersion="평균 사용자">적당히</button>
+                <button class="immersion-btn" data-immersion="몰입 사용자">많이</button>
+                </div>
+              </div>
+          </div>
+          <div class="set-area">
+              <button id="reset">
+                <span class="material-symbols-outlined">replay</span>
+              </button>
+              <button id="direct-send">생성하기
+                  <img src="images/arrow-white.png" alt="">
+              </button>
+              <button id="interview-send" style="display: none;">생성하기
+                  <img src="images/arrow-white.png" alt="">
+              </button>
+            </div>
+          </div>
+      </div>
+      <div id="personas-container"></div>
+      <button id="toggle-process-btn"><img src="images/light.svg" id="process-icon"></button>
+      <div id="step-popup" style="display: none;">
+        <span id="close-popup">X</span>
+        <div class="tab-bar">
+            <div class="tab active" data-step="step1">STEP1</div>
+            <div class="tab" data-step="step2">STEP2</div>
+            <div class="tab" data-step="step3">STEP3</div>
+            <div class="tab" data-step="step4">STEP4</div>
+        </div>
+        <div class="step-content active" id="step1-content"></div>
+        <div class="step-content" id="step2-content"></div>
+        <div class="step-content" id="step3-content"></div>
+        <div class="step-content" id="step4-content"></div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
